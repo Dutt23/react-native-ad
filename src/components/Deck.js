@@ -5,7 +5,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = .50 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
-const Deck = ({ data, renderCard }) => {
+const Deck = ({ data, renderCard, onSwipeRight = () =>{}, onSwipeLeft = () => {} }) => {
 
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -64,6 +64,10 @@ const Deck = ({ data, renderCard }) => {
       duration: SWIPE_OUT_DURATION,
       useNativeDriver: true,
     }).start();
+  }
+
+  const onSwipeComplete = (direction) =>{
+    direction === 'right' ? onSwipeRight : onSwipeLeft;
   }
 
   const resetPosition = () =>{
