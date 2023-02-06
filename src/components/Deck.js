@@ -19,7 +19,11 @@ const Deck = ({ data, renderCard }) => {
     onPanResponderMove: Animated.event([null, {dx: pan.x, dy: pan.y}], {useNativeDriver: false}),
     // Called when user presses down, and then releases.
     // Finalised callback.
-    onPanResponderRelease: () => {pan.extractOffset()},
+    onPanResponderRelease: () => {
+      // If you need to keep the current position as it is.
+      //  pan.extractOffset() 
+      resetPosition()
+      },
   })).current;
 
 
@@ -35,6 +39,14 @@ const Deck = ({ data, renderCard }) => {
       { rotate }
     ]}
   }
+
+  const resetPosition = () =>{
+    Animated.spring(pan, {
+      toValue: { x :0, y : 0},
+      useNativeDriver: true,
+    }).start()
+  }
+
   const renderCards = () =>{
     return data.map((item, index) => {
 
