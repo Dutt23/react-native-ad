@@ -3,6 +3,7 @@ import { useRef } from 'react';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = .50 * SCREEN_WIDTH;
+const SWIPE_OUT_DURATION = 250;
 
 const Deck = ({ data, renderCard }) => {
 
@@ -26,9 +27,9 @@ const Deck = ({ data, renderCard }) => {
       //  pan.extractOffset() 
       const { dx } = gestureState;
       if(dx > SWIPE_THRESHOLD){
-        console.log("swipe right");
+        forceSwipeRight();
       } else if (dx < -SWIPE_THRESHOLD) {
-        console.log("swipe left")
+        forceSwipeLeft();
       } else {
         resetPosition()
       }
@@ -47,6 +48,22 @@ const Deck = ({ data, renderCard }) => {
       { translateY: pan.y },
       { rotate }
     ]}
+  }
+
+  const forceSwipeRight = () =>{
+    Animated.timing(pan, {
+      toValue: { x : SCREEN_WIDTH, y : 0},
+      duration: SWIPE_OUT_DURATION,
+      useNativeDriver: true,
+    }).start();
+  }
+
+  const forceSwipeLeft = () =>{
+    Animated.timing(pan, {
+      toValue: { x : -SCREEN_WIDTH, y : 0},
+      duration: SWIPE_OUT_DURATION,
+      useNativeDriver: true,
+    }).start();
   }
 
   const resetPosition = () =>{
