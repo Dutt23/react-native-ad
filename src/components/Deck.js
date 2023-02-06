@@ -17,21 +17,32 @@ const Deck = ({ data, renderCard }) => {
     onPanResponderMove: Animated.event([null, {dx: pan.x, dy: pan.y}], {useNativeDriver: false}),
     // Called when user presses down, and then releases.
     // Finalised callback.
-    onPanResponderRelease: () => {},
+    onPanResponderRelease: () => {pan.extractOffset()},
   })).current;
 
   const renderCards = () =>{
-    return data.map(item => renderCard(item))
+    return data.map((item, index) => {
+
+      if(index !== 0) {
+        return renderCard(item);
+      }
+
+      return <Animated.View 
+      key={index}
+      style = {{  transform : [
+      { translateX: pan.x}, 
+       {translateY: pan.y}
+    ]}}
+      {...panResponder.panHandlers}>{renderCard(item)}
+      </Animated.View>
+    }
+    )
   }
 
   return (
-    <Animated.View 
-    style = {{  transform : [
-    { translateX: pan.x}, 
-     {translateY: pan.y}
-  ]}}
-    {...panResponder.panHandlers}>{renderCards()}
-    </Animated.View>
+    <View>
+      {renderCards()}
+    </View>
   )
 }
 
