@@ -1,5 +1,7 @@
-import { View, Animated, Text, PanResponder } from 'react-native'
+import { View, Animated, Text, PanResponder, Dimensions } from 'react-native'
 import { useRef } from 'react';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 const Deck = ({ data, renderCard }) => {
 
   const pan = useRef(new Animated.ValueXY()).current;
@@ -23,11 +25,11 @@ const Deck = ({ data, renderCard }) => {
 
   const getCardStyle = () => {
     const rotate = pan.x.interpolate({
-      inputRange:[-500, 0, 500],
+      inputRange:[-SCREEN_WIDTH * 1.5 , 0, SCREEN_WIDTH * 1.5],
       outputRange:['-120deg', '0deg', '120deg']
     });
 
-    return {transform : [
+    return { transform : [
       { translateX: pan.x }, 
       { translateY: pan.y },
       { rotate }
