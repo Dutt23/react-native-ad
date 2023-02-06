@@ -2,6 +2,8 @@ import { View, Animated, Text, PanResponder, Dimensions } from 'react-native'
 import { useRef } from 'react';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SWIPE_THRESHOLD = .50 * SCREEN_WIDTH;
+
 const Deck = ({ data, renderCard }) => {
 
   const pan = useRef(new Animated.ValueXY()).current;
@@ -19,10 +21,17 @@ const Deck = ({ data, renderCard }) => {
     onPanResponderMove: Animated.event([null, {dx: pan.x, dy: pan.y}], {useNativeDriver: false}),
     // Called when user presses down, and then releases.
     // Finalised callback.
-    onPanResponderRelease: () => {
+    onPanResponderRelease: (evt, gestureState) => {
       // If you need to keep the current position as it is.
       //  pan.extractOffset() 
-      resetPosition()
+      const { dx } = gestureState;
+      if(dx > SWIPE_THRESHOLD){
+        console.log("swipe right");
+      } else if (dx < -SWIPE_THRESHOLD) {
+        console.log("swipe left")
+      } else {
+        resetPosition()
+      }
       },
   })).current;
 
