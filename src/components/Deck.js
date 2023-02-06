@@ -20,6 +20,14 @@ const Deck = ({ data, renderCard }) => {
     onPanResponderRelease: () => {pan.extractOffset()},
   })).current;
 
+
+  const getCardStyle = () =>{
+    return {  transform : [
+      { translateX: pan.x}, 
+      {translateY: pan.y},
+      {rotate: '45deg'}
+    ]}
+  }
   const renderCards = () =>{
     return data.map((item, index) => {
 
@@ -28,11 +36,8 @@ const Deck = ({ data, renderCard }) => {
       }
 
       return <Animated.View 
-      key={index}
-      style = {{  transform : [
-      { translateX: pan.x}, 
-       {translateY: pan.y}
-    ]}}
+      key={item.id}
+      style = {getCardStyle()}
       {...panResponder.panHandlers}>{renderCard(item)}
       </Animated.View>
     }
