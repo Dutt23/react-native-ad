@@ -1,5 +1,5 @@
 import { View, Animated, Text, PanResponder, Dimensions } from 'react-native'
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = .50 * SCREEN_WIDTH;
@@ -9,6 +9,8 @@ const Deck = ({ data, renderCard, onSwipeRight = () =>{}, onSwipeLeft = () => {}
 
   const pan = useRef(new Animated.ValueXY()).current;
 
+  // Declare a new state variable, which we'll call "count"
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const panResponder = useRef(PanResponder.create({
     // Decide whether this responder should handle the event.
     // Triggerred when user first clicks down.
@@ -27,9 +29,9 @@ const Deck = ({ data, renderCard, onSwipeRight = () =>{}, onSwipeLeft = () => {}
       //  pan.extractOffset() 
       const { dx } = gestureState;
       if(dx > SWIPE_THRESHOLD){
-        forceSwipeRight();
+        forceSwipe('right')
       } else if (dx < -SWIPE_THRESHOLD) {
-        forceSwipeLeft();
+        forceSwipe('left')
       } else {
         resetPosition()
       }
@@ -50,24 +52,17 @@ const Deck = ({ data, renderCard, onSwipeRight = () =>{}, onSwipeLeft = () => {}
     ]}
   }
 
-  const forceSwipeRight = () =>{
+  const forceSwipe = (action) =>{
     Animated.timing(pan, {
-      toValue: { x : SCREEN_WIDTH, y : 0},
+      toValue: { x : action === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH,  y : 0},
       duration: SWIPE_OUT_DURATION,
       useNativeDriver: true,
-    }).start();
-  }
-
-  const forceSwipeLeft = () =>{
-    Animated.timing(pan, {
-      toValue: { x : -SCREEN_WIDTH, y : 0},
-      duration: SWIPE_OUT_DURATION,
-      useNativeDriver: true,
-    }).start();
+    }).start(() => onSwipeComplete(action));
   }
 
   const onSwipeComplete = (direction) =>{
-    direction === 'right' ? onSwipeRight : onSwipeLeft;
+    const item = data[0];
+    direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
   }
 
   const resetPosition = () =>{
@@ -80,7 +75,7 @@ const Deck = ({ data, renderCard, onSwipeRight = () =>{}, onSwipeLeft = () => {}
   const renderCards = () =>{
     return data.map((item, index) => {
 
-      if(index !== 0) {
+      if(index !== currentCardIndex) {
         return renderCard(item);
       }
 

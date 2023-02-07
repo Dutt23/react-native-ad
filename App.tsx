@@ -36,6 +36,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Deck 
+      onSwipeLeft={() => console.log("Somsrhing has swiped left")}
+      onSwipeRight={() => console.log("Somehing was swiped right")}
       data={DATA}
       renderCard={renderCard}
       />
