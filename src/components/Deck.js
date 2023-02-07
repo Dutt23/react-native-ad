@@ -1,4 +1,4 @@
-import { View, Animated, Text, PanResponder, Dimensions } from 'react-native'
+import { View, Animated, PanResponder, Dimensions, LayoutAnimation, UIManager } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -63,8 +63,15 @@ const Deck = ({ data, renderCard, onSwipeRight = (item) => { }, onSwipeLeft = (i
   }
 
   useEffect(() => {
-    pan.setValue({ x: 0, y: 0 })
-
+    // The spring animation messes with the initial render
+    if (counter !== 0) {
+      // Only for android
+      UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true)
+      // Tells react native next time when you re-render the componenent use this animation
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+      LayoutAnimation.spring()
+      pan.setValue({ x: 0, y: 0 })
+    }
     return () => { }
   }, [counter])
 
