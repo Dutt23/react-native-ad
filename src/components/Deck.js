@@ -1,16 +1,16 @@
 import { View, Animated, Text, PanResponder, Dimensions } from 'react-native'
-import { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = .50 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
-const Deck = ({ data, renderCard, onSwipeRight = () =>{}, onSwipeLeft = () => {} }) => {
+const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (item) => {} }) => {
 
+
+  const [counter, setCounter] = useState(0);
   const pan = useRef(new Animated.ValueXY()).current;
 
-  // Declare a new state variable, which we'll call "count"
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const panResponder = useRef(PanResponder.create({
     // Decide whether this responder should handle the event.
     // Triggerred when user first clicks down.
@@ -56,26 +56,38 @@ const Deck = ({ data, renderCard, onSwipeRight = () =>{}, onSwipeLeft = () => {}
     Animated.timing(pan, {
       toValue: { x : action === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH,  y : 0},
       duration: SWIPE_OUT_DURATION,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => onSwipeComplete(action));
   }
 
+  useEffect(() =>{
+    pan.setValue({ x:0, y:0})
+
+    return () => {}
+  }, [counter])
+
   const onSwipeComplete = (direction) =>{
-    const item = data[0];
-    direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
+    setCounter((prev) => {
+      const item = data[prev];
+      direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item)
+      const newCounter = prev +1;
+      return newCounter;
+      } )
   }
 
   const resetPosition = () =>{
     Animated.spring(pan, {
       toValue: { x :0, y : 0},
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start()
   }
 
   const renderCards = () =>{
     return data.map((item, index) => {
 
-      if(index !== currentCardIndex) {
+      if(index < counter) { return null; }
+
+      if(index !== counter) {
         return renderCard(item);
       }
 
