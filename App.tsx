@@ -22,8 +22,8 @@ export default function App() {
       <Card key = {id}>
         <Card.Title>{text}</Card.Title>
         <Card.Divider/>
-        <Card.Image source={{ uri }} style={{ width: 200, height: 200 }}></Card.Image>
-        <Text style={{ marginBottom: 1}}>
+        <Card.Image source={{ uri }}></Card.Image>
+        <Text style={{ marginBottom: 20, marginTop: 20}}>
           Customized here
         </Text>
         <Button
@@ -33,13 +33,29 @@ export default function App() {
       </Card>)
   }
   
+  const renderNoMoreCards = () =>{
+    return (
+      <Card>
+        <Card.Title>All done</Card.Title>
+        <Card.Divider/>
+        <Text style={{ marginBottom: 10}}>
+          Customized here
+        </Text>
+        <Button
+      icon={<Icon name='code' color='#03a9f4' />}
+      buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+      title='GET MORE!' />
+      </Card>
+    )
+  }
   return (
-    <View style={styles.container}>
+    <View>
       <Deck 
       onSwipeLeft={(item) => console.log(`Somsrhing has swiped left ${item.id}`)}
       onSwipeRight={(item) => console.log(`Somehing was swiped right ${item.id}`)}
       data={DATA}
       renderCard={renderCard}
+      renderNoMoreCards={renderNoMoreCards}
       />
     </View>
   );

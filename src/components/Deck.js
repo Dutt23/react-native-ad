@@ -5,7 +5,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = .50 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
-const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (item) => {} }) => {
+const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (item) => {}, renderNoMoreCards }) => {
 
 
   const [counter, setCounter] = useState(0);
@@ -48,7 +48,7 @@ const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (ite
     return { transform : [
       { translateX: pan.x }, 
       { translateY: pan.y },
-      { rotate }
+      { rotate },
     ]}
   }
 
@@ -60,8 +60,8 @@ const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (ite
     }).start(() => onSwipeComplete(action));
   }
 
-  useEffect(() =>{
-    pan.setValue({ x:0, y:0})
+  useEffect(() => {
+    pan.setValue({ x:0, y:0 })
 
     return () => {}
   }, [counter])
@@ -72,7 +72,7 @@ const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (ite
       direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item)
       const newCounter = prev +1;
       return newCounter;
-      })
+    })
   }
 
   const resetPosition = () =>{
@@ -82,22 +82,31 @@ const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (ite
     }).start()
   }
 
-  const renderCards = () =>{
-    return data.map((item, index) => {
+  const renderCards = () => {
 
+    if(counter >= data.length){
+      return renderNoMoreCards();
+    }
+
+    return data.map((item, index) => {
       if(index < counter) { return null; }
 
-      if(index !== counter) {
-        return renderCard(item);
-      }
-
-      return <Animated.View 
-      key={item.id}
-      style = {getCardStyle()}
-      {...panResponder.panHandlers}>{renderCard(item)}
-      </Animated.View>
-    }
-    )
+      return index === counter ? 
+      (<Animated.View 
+        key={item.id}
+        style = {[getCardStyle(), styles.cardStyle]}
+        {...panResponder.panHandlers}>
+          {renderCard(item)}
+        </Animated.View>) 
+        :  
+        (
+        <Animated.View key ={item.id} style ={styles.cardStyle}>
+          {renderCard(item)}
+        </Animated.View>
+      )
+    }).reverse();
+    // Absolute property renders one by one. On top of each other, from last element.
+    // Reversing the list to show the last one first.
   }
 
   return (
@@ -107,5 +116,15 @@ const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (ite
   )
 }
 
+const styles = {
+  cardStyle: {
+    position: 'absolute',
+    width: SCREEN_WIDTH,
+    // flex: 1,
+    // alignContent:'center'
+    // left: 0,
+    // right: 0
+  }
+}
 
 export default Deck;
