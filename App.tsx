@@ -17,45 +17,45 @@ const DATA = [
 
 export default function App() {
 
-  const renderCard = ({ id, text, uri}) => {
+  const renderCard = ({ id, text, uri }) => {
     return (
-      <Card key = {id}>
+      <Card key={id}>
         <Card.Title>{text}</Card.Title>
-        <Card.Divider/>
+        <Card.Divider />
         <Card.Image source={{ uri }}></Card.Image>
-        <Text style={{ marginBottom: 20, marginTop: 20}}>
+        <Text style={{ marginBottom: 20, marginTop: 20 }}>
           Customized here
         </Text>
         <Button
-      icon={<Icon name='code' color='#03a9f4' />}
-      buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-      title='VIEW NOW!' />
+          icon={<Icon name='code' color='#03a9f4' />}
+          buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+          title='VIEW NOW!' />
       </Card>)
   }
-  
-  const renderNoMoreCards = () =>{
+
+  const renderNoMoreCards = () => {
     return (
       <Card>
         <Card.Title>All done</Card.Title>
-        <Card.Divider/>
-        <Text style={{ marginBottom: 10}}>
+        <Card.Divider />
+        <Text style={{ marginBottom: 10 }}>
           Customized here
         </Text>
         <Button
-      icon={<Icon name='code' color='#03a9f4' />}
-      buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-      title='GET MORE!' />
+          icon={<Icon name='code' color='#03a9f4' />}
+          buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+          title='GET MORE!' />
       </Card>
     )
   }
   return (
     <View>
-      <Deck 
-      onSwipeLeft={(item) => console.log(`Somsrhing has swiped left ${item.id}`)}
-      onSwipeRight={(item) => console.log(`Somehing was swiped right ${item.id}`)}
-      data={DATA}
-      renderCard={renderCard}
-      renderNoMoreCards={renderNoMoreCards}
+      <Deck
+        onSwipeLeft={(item) => console.log(`Somsrhing has swiped left ${item.id}`)}
+        onSwipeRight={(item) => console.log(`Somehing was swiped right ${item.id}`)}
+        data={DATA}
+        renderCard={renderCard}
+        renderNoMoreCards={renderNoMoreCards}
       />
     </View>
   );

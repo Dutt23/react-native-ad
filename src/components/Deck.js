@@ -105,7 +105,8 @@ const Deck = ({ data, renderCard, onSwipeRight = (item) => { }, onSwipeLeft = (i
           // When the card reaches the top deck, it needs to be rendered with animated view component
           // So it gets promoted from View to animated view, so it gets re-rendered.
           // Hence the device tries to fetch the image again, and a small flicker of the image happens
-          <Animated.View key={item.id} style={styles.cardStyle}>
+          // Need to do this so that the card is never fixed in it's position
+          <Animated.View key={item.id} style={[styles.cardStyle, { top: 10 * (index - counter) }]}>
             {renderCard(item)}
           </Animated.View>
         )
