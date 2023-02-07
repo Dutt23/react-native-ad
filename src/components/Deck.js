@@ -72,7 +72,7 @@ const Deck = ({ data, renderCard, onSwipeRight = (item) =>{}, onSwipeLeft = (ite
       direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item)
       const newCounter = prev +1;
       return newCounter;
-      } )
+      })
   }
 
   const resetPosition = () =>{
